@@ -10,6 +10,7 @@ export const getalluser = async(req,res) =>{
             const {password, ...other}=user._doc;
             return other
         })
+        console.log(users)
         res.status(200).json(users)
     } catch (error) {
         res.status(500).json(error)

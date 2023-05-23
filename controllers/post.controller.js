@@ -63,13 +63,10 @@ export const deletePost=async(req,res)=>{
 export const likePost=async(req,res)=>{
         const id=req.params.id;
         const{userId}=req.body;
-        console.log("id",id)
-        console.log("userId",userId)
         try {
             const post=await postModel.findById(id);
             if(!post.likes.includes(userId)){
-                const postone=await post.updateOne({$push:{likes:userId}});
-                console.log("postone",postone)
+                await post.updateOne({$push:{likes:userId}});
                 res.status(200).json("post liked successfully")
             }
             else{
@@ -112,15 +109,9 @@ export const gettimelinePost=async(req,res)=>{
                 }
             }
     ])
-    console.log("following",followingPost)
-    console.log("currentuser",currentUserPost)
-    res.status(200).json(currentUserPost.sort((a,b)=>{
+    res.status(200).json(currentUserPost.concat(...followingPost[0].followingPost).sort((a,b)=>{
         return b.createdAt-a.createdAt;
-
-    // res.status(200).json(currentUserPost.concat(...followingPost[0].followingPost).sort((a,b)=>{
-    //     return b.createdAt-a.createdAt;
     }))
-
     
     } catch (error) {
         res.status(403).json(error)
